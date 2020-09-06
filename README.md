@@ -1,6 +1,7 @@
 
 ## Where's Waldo?! - A phototagging app 
 Created using: React + Firebase
+
 (Use in desktop Browser for best results)
 
 Find out where waldo and the gang are. 
