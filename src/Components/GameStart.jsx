@@ -1,4 +1,5 @@
 import React from "react";
+import BorderPiece from "./BorderPiece"
 import waldoBoard from "../Img/gameboard.jpg"
 import {
     BrowserRouter as Router,
@@ -12,6 +13,7 @@ import GameHome from "./GameHome";
       constructor(props){
           super(props)
           this.state = {
+              clicked: false,
               timerStart: false,
               imgloaded: true,
               x: 0,
@@ -29,26 +31,18 @@ import GameHome from "./GameHome";
       }
 
       checkBoardClick(e){
-        this.setState({ x: e.clientX, y: e.clientY });
-
+          
+        this.setState({ x: e.clientX, y: e.clientY, clicked: true });
         if (e.clientX >= 570 && e.clientY < 585)
         {
-            console.log('you found wizard!')
+            console.log('you found wizard!');
         }
       }
 
       render(){
         return(
             <div className='gameContainer'>
-            <div className='borderContainer'>
-                <div className='border'>
-                </div>
-                <select className='charSelect'>
-                    <option>Waldo</option>
-                    <option>Wizard</option>
-                    <option>BeeGuy</option>
-                </select>
-            </div>
+            <BorderPiece top={this.state.y} left={this.state.x} clicked={this.state.clicked ? 'flex' : 'none'}></BorderPiece>
                 <img className='waldoBoard' src={waldoBoard}
                 onLoad={() => this.startTimer()}
                 onClick={this.checkBoardClick}
