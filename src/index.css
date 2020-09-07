@@ -3,3 +3,32 @@
   padding:0;
   box-sizing:border-box;
 }
+
+.gameContainer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.waldoBoard{
+  width: 1280px;
+  height: 720px;
+}
+
+.borderContainer{
+display: flex;
+justify-content: flex-start;
+flex-direction: row;
+}
+
+.border{
+  border: 2px solid green;
+  border-style: dashed;
+  height: 90px;
+  width: 50px;
+}
+
+.charSelect{
+  margin-left: 5px;
+  height: 20px;
+}
