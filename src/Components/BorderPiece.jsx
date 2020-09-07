@@ -13,10 +13,10 @@ function BorderPiece(props){
         <div className='borderContainer' style={style}>
                 <div className='border'>
                 </div>
-                <select className='charSelect'>
-                    <option>Waldo</option>
-                    <option>Wizard</option>
-                    <option>BeeGuy</option>
+                <select className='charSelect' value={props.value} onChange={props.onChange} name='selectedChar'>
+                    <option value='waldo'>Waldo</option>
+                    <option value='wizard'>Wizard</option>
+                    <option value='odlaw'>Odlaw</option>
                 </select>
             </div>
     )
