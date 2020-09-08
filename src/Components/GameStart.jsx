@@ -3,6 +3,7 @@ import BorderPiece from "./BorderPiece";
 import waldoBoard from "../Img/gameboard.jpg";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import GameHome from "./GameHome";
+import Timer from "./Timer"
 
 class GameStart extends React.Component {
   constructor(props) {
@@ -109,6 +110,7 @@ class GameStart extends React.Component {
   render() {
     return (
       <div className="gameContainer">
+      { this.state.timerOn ? <Timer timerTime={this.state.timerTime}></Timer> : ''}
         <BorderPiece
           top={this.state.y}
           left={this.state.x}
