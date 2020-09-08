@@ -16,14 +16,6 @@
 }
 
 
-.border {
-  border: 2px solid blue;
-  border-style: dashed;
-  height: 50px;
-  width: 30px;
-  pointer-events: none;
-}
-
 .charSelect {
   margin-left: 5px;
   height: 20px;
