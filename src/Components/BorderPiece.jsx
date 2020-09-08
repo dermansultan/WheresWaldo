@@ -4,7 +4,7 @@ function BorderPiece(props) {
   const containerStyle = {
     position: "absolute",
     justifyContent: "flexstart",
-    flexDirection: "row",  
+    flexDirection: "row",
     left: `${props.left - 30 / 2}px`,
     top: `${props.top - 50 / 2}px`,
     display: `${props.clicked}`,
@@ -16,9 +16,8 @@ function BorderPiece(props) {
     height: "50px",
     width: "30px",
     pointerEvents: "none",
-    borderColor: `${props.color}`
-  }
-
+    borderColor: `${props.color}`,
+  };
 
   return (
     <div className="borderContainer" style={containerStyle}>
@@ -28,10 +27,11 @@ function BorderPiece(props) {
         value={props.value}
         onChange={props.onChange}
         name="selectedChar"
+        placeholder={props.placeholder}
       >
-        {props.characters.waldo ? <option value="waldo" disabled>Waldo</option> : <option value="waldo">Waldo</option>}
-        {props.characters.odlaw ? <option value="odlaw" disabled>Odlaw</option> : <option value="odlaw">Odlaw</option>}
-        {props.characters.wizard ? <option value="wizard" disabled>Wizard</option> : <option value="wizard">Wizard</option>}
+        <option value="waldo">Waldo</option>
+        <option value="odlaw">Odlaw</option>
+        <option value="wizard">Wizard</option>
       </select>
     </div>
   );
