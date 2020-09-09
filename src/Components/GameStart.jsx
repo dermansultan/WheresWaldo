@@ -4,12 +4,13 @@ import waldoBoard from "../Img/gameboard.jpg";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import GameHome from "./GameHome";
 import Timer from "./Timer";
+import GameWinModal from "./GameWinModal";
 
 class GameStart extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      gameOver: false,
+      gameOver: true,
       bordercolor: "blue",
       clicked: false,
       timerOn: false,
@@ -22,6 +23,7 @@ class GameStart extends React.Component {
       odlaw: true,
       x: 0,
       y: 0,
+      userName: "",
     };
     this.startTimer = this.startTimer.bind(this);
     this.stopTimer = this.stopTimer.bind(this);
@@ -44,19 +46,19 @@ class GameStart extends React.Component {
     }, 10);
   }
 
-  checkForWin(){
-        // Win State
-        console.log('it ran gotem')
-        if (
-          this.state.waldo === true &&
-          this.state.wizard === true &&
-          this.state.odlaw === true
-        ) {
-          this.stopTimer();
-          this.setState({
-            gameOver: true,
-          })
-        }
+  checkForWin() {
+    // Win State
+    console.log("it ran gotem");
+    if (
+      this.state.waldo === true &&
+      this.state.wizard === true &&
+      this.state.odlaw === true
+    ) {
+      this.stopTimer();
+      this.setState({
+        gameOver: true,
+      });
+    }
   }
 
   stopTimer() {
@@ -78,11 +80,13 @@ class GameStart extends React.Component {
       e.target.value == "wizard"
     ) {
       console.log("wizard found");
-      this.setState({
-        bordercolor: "green",
-        wizard: true,
-      }, this.checkForWin);
-      
+      this.setState(
+        {
+          bordercolor: "green",
+          wizard: true,
+        },
+        this.checkForWin
+      );
     }
 
     // Find Waldo
@@ -94,11 +98,13 @@ class GameStart extends React.Component {
       e.target.value == "waldo"
     ) {
       console.log("waldo found");
-      this.setState({
-        bordercolor: "green",
-        waldo: true,
-      }, this.checkForWin);
-      
+      this.setState(
+        {
+          bordercolor: "green",
+          waldo: true,
+        },
+        this.checkForWin
+      );
     }
 
     // Find Odlaw
@@ -110,45 +116,55 @@ class GameStart extends React.Component {
       e.target.value == "odlaw"
     ) {
       console.log("odlaw found");
-      this.setState({
-        bordercolor: "green",
-        odlaw: true,
-      }, this.checkForWin);
+      this.setState(
+        {
+          bordercolor: "green",
+          odlaw: true,
+        },
+        this.checkForWin
+      );
     }
   }
 
   checkBoardClick(e) {
-    this.setState({
-      x: e.clientX,
-      y: e.clientY,
-      clicked: true,
-      bordercolor: "blue",
-    }, this.checkForWin);
-    
+    this.setState(
+      {
+        x: e.clientX,
+        y: e.clientY,
+        clicked: true,
+        bordercolor: "blue",
+      },
+      this.checkForWin
+    );
   }
 
   render() {
     return (
       <div className="gameContainer">
-          <Timer timerTime={this.state.timerTime}></Timer>
-{ this.state.gameOver ? '' :<BorderPiece
-          top={this.state.y}
-          left={this.state.x}
-          clicked={this.state.clicked ? "flex" : "none"}
-          onChange={this.handleChange}
-          value={this.state.selectedChar}
-          characters={{
-            waldo: this.state.waldo,
-            odlaw: this.state.odlaw,
-            wizard: this.state.wizard,
-          }}
-          color={this.state.bordercolor}
-          placeholder={'character'}
-        ></BorderPiece>}
+    {this.state.gameOver ? <GameWinModal value={this.state.userName} onChange={this.handleChange}></GameWinModal> : ""}
+        <Timer timerTime={this.state.timerTime}></Timer>
+        {this.state.gameOver ? (
+          ""
+        ) : (
+          <BorderPiece
+            top={this.state.y}
+            left={this.state.x}
+            clicked={this.state.clicked ? "flex" : "none"}
+            onChange={this.handleChange}
+            value={this.state.selectedChar}
+            characters={{
+              waldo: this.state.waldo,
+              odlaw: this.state.odlaw,
+              wizard: this.state.wizard,
+            }}
+            color={this.state.bordercolor}
+            placeholder={"character"}
+          ></BorderPiece>
+        )}
         <img
           className="waldoBoard"
           src={waldoBoard}
-          onLoad={() => this.startTimer()}
+          // onLoad={() => this.startTimer()}
           onClick={this.checkBoardClick}
         ></img>
         <button onClick={this.stopTimer}>Stop Timer Test</button>
