@@ -5,12 +5,14 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import GameHome from "./GameHome";
 import Timer from "./Timer";
 import GameWinModal from "./GameWinModal";
+import fire from "../fire"
+import "firebase/firestore";
 
 class GameStart extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      gameOver: true,
+      gameOver: false,
       bordercolor: "blue",
       clicked: false,
       timerOn: false,
@@ -32,7 +34,30 @@ class GameStart extends React.Component {
     this.checkForWin = this.checkForWin.bind(this);
   }
 
+  componentDidMount(){
+    const coordsObj = {}
+    fire.firestore()
+    .collection("charcoords ")
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((character) => {
+        const charObj = {
+          minX: character.data().minX,
+          maxX: character.data().maxX,
+          minY: character.data().minY,
+          maxY: character.data().maxY,
+        }
+        coordsObj[character.id] = charObj
+      });
+      this.setState({
+        coordsObj: coordsObj
+      })
+      console.log(coordsObj)
+    });
+}
+
   startTimer() {
+    // Start Timer Locally
     this.setState({
       imgloaded: true,
       timerOn: true,
@@ -73,10 +98,10 @@ class GameStart extends React.Component {
 
     // Find Wizard
     if (
-      this.state.x >= 570 &&
-      this.state.x < 585 &&
-      this.state.y >= 256 &&
-      this.state.y < 300 &&
+      this.state.x >= this.state.coordsObj.wizard.minX &&
+      this.state.x < this.state.coordsObj.wizard.maxX &&
+      this.state.y >= this.state.coordsObj.wizard.minY &&
+      this.state.y < this.state.coordsObj.wizard.maxY &&
       e.target.value == "wizard"
     ) {
       console.log("wizard found");

@@ -7,10 +7,18 @@ import {
   } from "react-router-dom";
 
 
-  function Leaderboards() {
-    return(
-        <div>Leaderboards</div>
-    )
-}
+  class Leaderboards extends React.Component{
+    constructor(props){
+    super(props)
+    this.state = {
+      playerListData: {}
+    }
+    }
+    render(){
+      return(
+        <div className='LeaderboardsContainer'></div>
+      )
+    }
+  }
 
 export default Leaderboards
