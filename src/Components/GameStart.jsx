@@ -1,12 +1,9 @@
 import React from "react";
 import BorderPiece from "./BorderPiece";
 import waldoBoard from "../Img/gameboard.jpg";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import GameHome from "./GameHome";
 import Timer from "./Timer";
 import GameWinModal from "./GameWinModal";
-import fire from "../fire"
-import "firebase/firestore";
+import firebase from "../fire";
 
 class GameStart extends React.Component {
   constructor(props) {
@@ -34,27 +31,28 @@ class GameStart extends React.Component {
     this.checkForWin = this.checkForWin.bind(this);
   }
 
-  componentDidMount(){
-    const coordsObj = {}
-    fire.firestore()
-    .collection("charcoords ")
-    .get()
-    .then((snapshot) => {
-      snapshot.forEach((character) => {
-        const charObj = {
-          minX: character.data().minX,
-          maxX: character.data().maxX,
-          minY: character.data().minY,
-          maxY: character.data().maxY,
-        }
-        coordsObj[character.id] = charObj
+  componentDidMount() {
+    const coordsObj = {};
+    firebase
+      .firestore()
+      .collection("charcoords ")
+      .get()
+      .then((snapshot) => {
+        snapshot.forEach((character) => {
+          const charObj = {
+            minX: character.data().minX,
+            maxX: character.data().maxX,
+            minY: character.data().minY,
+            maxY: character.data().maxY,
+          };
+          coordsObj[character.id] = charObj;
+        });
+        this.setState({
+          coordsObj: coordsObj,
+        });
+        console.log(coordsObj);
       });
-      this.setState({
-        coordsObj: coordsObj
-      })
-      console.log(coordsObj)
-    });
-}
+  }
 
   startTimer() {
     // Start Timer Locally
@@ -64,6 +62,19 @@ class GameStart extends React.Component {
       timerTime: this.state.timerTime,
       timerStart: Date.now() - this.state.timerTime,
     });
+
+    // Start Timer Server Side
+    firebase.firestore().collection("users").add({
+      name: "",
+      userStart: firebase.firestore.Timestamp.now()
+  })
+  .then(function(docRef) {
+      console.log("Document written with ID: ", docRef.id);
+  })
+  .catch(function(error) {
+      console.error("Error adding document: ", error);
+  });
+
     this.timer = setInterval(() => {
       this.setState({
         timerTime: Date.now() - this.state.timerStart,
@@ -116,10 +127,10 @@ class GameStart extends React.Component {
 
     // Find Waldo
     if (
-      this.state.x >= 1014 &&
-      this.state.x < 1031 &&
-      this.state.y >= 277 &&
-      this.state.y < 315 &&
+      this.state.x >= this.state.coordsObj.waldo.minX &&
+      this.state.x < this.state.coordsObj.waldo.maxX &&
+      this.state.y >= this.state.coordsObj.waldo.minY &&
+      this.state.y < this.state.coordsObj.waldo.maxY &&
       e.target.value == "waldo"
     ) {
       console.log("waldo found");
@@ -134,10 +145,10 @@ class GameStart extends React.Component {
 
     // Find Odlaw
     if (
-      this.state.x >= 362 &&
-      this.state.x < 376 &&
-      this.state.y >= 262 &&
-      this.state.y < 293 &&
+      this.state.x >= this.state.coordsObj.odlaw.minX &&
+      this.state.x < this.state.coordsObj.odlaw.maxX &&
+      this.state.y >= this.state.coordsObj.odlaw.minY &&
+      this.state.y < this.state.coordsObj.odlaw.maxY &&
       e.target.value == "odlaw"
     ) {
       console.log("odlaw found");
@@ -166,7 +177,14 @@ class GameStart extends React.Component {
   render() {
     return (
       <div className="gameContainer">
-    {this.state.gameOver ? <GameWinModal value={this.state.userName} onChange={this.handleChange}></GameWinModal> : ""}
+        {this.state.gameOver ? (
+          <GameWinModal
+            value={this.state.userName}
+            onChange={this.handleChange}
+          ></GameWinModal>
+        ) : (
+          ""
+        )}
         <Timer timerTime={this.state.timerTime}></Timer>
         {this.state.gameOver ? (
           ""
