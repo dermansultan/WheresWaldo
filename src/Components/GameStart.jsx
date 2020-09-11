@@ -4,11 +4,16 @@ import waldoBoard from "../Img/gameboard.jpg";
 import Timer from "./Timer";
 import GameWinModal from "./GameWinModal";
 import firebase from "../fire";
+import {
+  Redirect
+} from "react-router-dom";
+
 
 class GameStart extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      toLeaderboard: false,
       gameOver: false,
       bordercolor: "blue",
       clicked: false,
@@ -193,6 +198,10 @@ class GameStart extends React.Component {
       .update({
         name: `${this.state.userName}`,
       });
+      this.setState({
+        toLeaderboard: true
+      })
+
   }
 
   checkBoardClick(e) {
@@ -208,7 +217,11 @@ class GameStart extends React.Component {
   }
 
   render() {
+    if (this.state.toLeaderboard === true) {
+      return <Redirect to='/Leaderboards' />
+    }
     return (
+      
       <div className="gameContainer">
         {this.state.gameOver ? (
           <GameWinModal
