@@ -1,5 +1,6 @@
 import React from "react";
 import GameStart from "./GameStart"
+import Leaderboards from "./Leaderboards"
 import {
     BrowserRouter as Router,
     Switch,
@@ -32,6 +33,9 @@ function GameHome(){
         <Switch>
             <Route path='/gamestart'>
             <GameStart></GameStart>
+            </Route>
+            <Route path='/Leaderboards'>
+            <Leaderboards></Leaderboards>
             </Route>
             </Switch>
         </div>

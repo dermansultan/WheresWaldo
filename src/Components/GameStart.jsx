@@ -17,7 +17,7 @@ class GameStart extends React.Component {
       timerTime: 0,
       imgloaded: false,
       selectedChar: "",
-      wizard: false,
+      wizard: true,
       waldo: true,
       odlaw: true,
       x: 0,
@@ -28,6 +28,7 @@ class GameStart extends React.Component {
     this.stopTimer = this.stopTimer.bind(this);
     this.checkBoardClick = this.checkBoardClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.checkForWin = this.checkForWin.bind(this);
   }
 
@@ -64,17 +65,10 @@ class GameStart extends React.Component {
     });
 
     // Start Timer Server Side
-    firebase.firestore().collection("users").add({
+    firebase.firestore().collection("users").doc(`${this.props.user.uid}`).set({
       name: "",
-      userStart: firebase.firestore.Timestamp.now()
-  })
-  .then(function(docRef) {
-      console.log("Document written with ID: ", docRef.id);
-  })
-  .catch(function(error) {
-      console.error("Error adding document: ", error);
-  });
-
+      userStart: firebase.firestore.Timestamp.now(),
+    });
     this.timer = setInterval(() => {
       this.setState({
         timerTime: Date.now() - this.state.timerStart,
@@ -91,9 +85,37 @@ class GameStart extends React.Component {
       this.state.odlaw === true
     ) {
       this.stopTimer();
-      this.setState({
-        gameOver: true,
-      });
+      this.setState(
+        {
+          gameOver: true,
+        },
+        () => {
+          firebase
+            .firestore()
+            .collection("users")
+            .doc(`${this.props.user.uid}`)
+            .update({
+              userEnd: firebase.firestore.Timestamp.now(),
+            });
+        }
+      );
+      firebase
+        .firestore()
+        .collection("users")
+        .doc(`${this.props.user.uid}`)
+        .get()
+        .then((snap) => {
+          let startTime = snap.get("userStart");
+          let endTime = snap.get("userEnd");
+          console.log(`Duration: ${endTime - startTime}`);
+          firebase
+            .firestore()
+            .collection("users")
+            .doc(`${this.props.user.uid}`)
+            .update({
+              score: (endTime - startTime),
+            });
+        });
     }
   }
 
@@ -162,6 +184,17 @@ class GameStart extends React.Component {
     }
   }
 
+  handleSubmit(e) {
+    e.preventDefault();
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(`${this.props.user.uid}`)
+      .update({
+        name: `${this.state.userName}`,
+      });
+  }
+
   checkBoardClick(e) {
     this.setState(
       {
@@ -181,6 +214,8 @@ class GameStart extends React.Component {
           <GameWinModal
             value={this.state.userName}
             onChange={this.handleChange}
+            handleSubmit={this.handleSubmit}
+            user={this.props.user.uid}
           ></GameWinModal>
         ) : (
           ""
@@ -207,7 +242,7 @@ class GameStart extends React.Component {
         <img
           className="waldoBoard"
           src={waldoBoard}
-          // onLoad={() => this.startTimer()}
+          onLoad={() => this.startTimer()}
           onClick={this.checkBoardClick}
         ></img>
         <button onClick={this.stopTimer}>Stop Timer Test</button>

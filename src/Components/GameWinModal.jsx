@@ -1,7 +1,15 @@
 import React from "react";
+import firebase from "../fire";
 
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+  } from "react-router-dom";
 
 function GameWinModal(props){
+
     return(
         <div className="modalContainer">
             <div className="modalBox">
@@ -9,7 +17,7 @@ function GameWinModal(props){
                     <label className='congrats'>Congratulations!</label>
                     <label className='nameEnter'>Enter your name:</label>
                     <input className='userNameIn' placeholder='Enter your name leaderboards' name='userName' value={props.value} onChange={props.onChange}></input>
-                    <button className='userNameSubmit'>Submit Score</button>
+                    <button type='submit' className='userNameSubmit'>Submit Score</button>
                 </form>
             </div>
         </div>
