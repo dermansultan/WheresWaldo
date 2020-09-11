@@ -1,16 +1,17 @@
 import React from "react";
 import firebase from "../fire";
+import UserScoreCard from "./UserScoreCard"
 
   class Leaderboards extends React.Component{
     constructor(props){
     super(props)
     this.state = {
-      playerListData: {}
+      playerListData: []
     }
     }
 
     componentDidMount() {
-      const usersListObj = {};
+      const usersListArr = [];
       firebase
         .firestore()
         .collection("users")
@@ -21,10 +22,10 @@ import firebase from "../fire";
               userName: user.data().name,
               score: user.data().score
             };
-            usersListObj[user.id] = userObj;
+            usersListArr.push(userObj);
           });
           this.setState({
-            playerListData: usersListObj,
+            playerListData: usersListArr,
           });
         });
     }
@@ -33,7 +34,9 @@ import firebase from "../fire";
     render(){
       return(
         <div className='LeaderboardsContainer'>
-          Welcome to Leaderboards!
+         {this.state.playerListData.map(userInfo => (
+           <UserScoreCard name={userInfo.userName} score={userInfo.score} key={userInfo.userName}></UserScoreCard>
+        ))}
         </div>
       )
     }
