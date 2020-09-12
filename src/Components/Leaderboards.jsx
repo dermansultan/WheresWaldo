@@ -14,7 +14,7 @@ import UserScoreCard from "./UserScoreCard"
       const usersListArr = [];
       firebase
         .firestore()
-        .collection("users")
+        .collection("users").orderBy("score", "asc")
         .get()
         .then((snapshot) => {
           snapshot.forEach((user) => {
@@ -33,10 +33,13 @@ import UserScoreCard from "./UserScoreCard"
 
     render(){
       return(
-        <div className='LeaderboardsContainer'>
+        <div className='leaderboardsContainer'>
+        <div className='usersContainer'>
+        <h1>Leaderboard:</h1>
          {this.state.playerListData.map(userInfo => (
            <UserScoreCard name={userInfo.userName} score={userInfo.score} key={userInfo.userName}></UserScoreCard>
         ))}
+        </div>
         </div>
       )
     }

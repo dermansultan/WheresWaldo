@@ -48,7 +48,7 @@ createAnonUser = () => {
 
   render(){
     return(
-      <div className='mainContainer'>
+      <div>
       <Router>
         <Switch>
         <Route path="/Home">
