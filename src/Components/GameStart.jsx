@@ -22,9 +22,9 @@ class GameStart extends React.Component {
       timerTime: 0,
       imgloaded: false,
       selectedChar: "",
-      wizard: true,
-      waldo: true,
-      odlaw: true,
+      wizard: false,
+      waldo: false,
+      odlaw: false,
       x: 0,
       y: 0,
       userName: "",
@@ -227,6 +227,12 @@ class GameStart extends React.Component {
     if (this.state.toLeaderboard === true) {
       return <Redirect to='/Leaderboards' />
     }
+
+    
+    if (this.props.user === null){
+      return <Redirect to='/'></Redirect>
+    }
+
     return (
       
       <div className="gameContainer">

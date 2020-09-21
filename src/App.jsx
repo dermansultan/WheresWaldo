@@ -37,7 +37,11 @@ createAnonUser = () => {
           user: user,
         })
         console.log(user.uid)
-      } 
+      } else {
+        this.setState({
+          user: null,
+        })
+      }
     });
   }
 
