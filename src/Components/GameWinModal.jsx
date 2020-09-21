@@ -16,7 +16,7 @@ function GameWinModal(props){
                 <form className='submitScore' onSubmit={props.handleSubmit}>
                     <label className='congrats'>Congratulations!</label>
                     <label className='nameEnter'>Enter your name:</label>
-                    <input className='userNameIn' placeholder='Enter your name leaderboards' name='userName' value={props.value} onChange={props.onChange}></input>
+                    <input className='userNameIn' placeholder='Enter your name leaderboards' name='userName' value={props.value} onChange={props.onChange} required></input>
                     <button type='submit' className='userNameSubmit'>Submit Score</button>
                 </form>
             </div>

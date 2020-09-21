@@ -190,17 +190,24 @@ class GameStart extends React.Component {
   }
 
   handleSubmit(e) {
-    e.preventDefault();
-    firebase
-      .firestore()
-      .collection("users")
-      .doc(`${this.props.user.uid}`)
-      .update({
-        name: `${this.state.userName}`,
-      });
+    e.preventDefault(); 
+    const setUserName = async () => {
+      try{
+        firebase
+        .firestore()
+        .collection("users")
+        .doc(`${this.props.user.uid}`)
+        .update({
+          name: `${this.state.userName}`,
+        });
+      } catch(err){
+        console.log(err, 'BRUH')
+      }
+    }
+    setUserName();
       this.setState({
         toLeaderboard: true
-      })
+      });
 
   }
 
