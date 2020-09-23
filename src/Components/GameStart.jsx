@@ -23,8 +23,8 @@ class GameStart extends React.Component {
       imgloaded: false,
       selectedChar: "",
       wizard: false,
-      waldo: false,
-      odlaw: false,
+      waldo: true,
+      odlaw: true,
       x: 0,
       y: 0,
       userName: "",
@@ -35,6 +35,22 @@ class GameStart extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.checkForWin = this.checkForWin.bind(this);
+    this.setUserEnd = this.setUserEnd.bind(this);
+    this.setUserName = this.setUserName.bind(this);
+  }
+
+  setUserName = () => {
+      firebase
+      .firestore()
+      .collection("users")
+      .doc(`${this.props.user.uid}`)
+      .update({
+        name: `${this.state.userName}`,
+      }).then( () =>{
+        this.setState({
+          toLeaderboard: true
+        })
+      });
   }
 
   componentDidMount() {
@@ -81,6 +97,16 @@ class GameStart extends React.Component {
     }, 10);
   }
 
+  setUserEnd = () => {
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(`${this.props.user.uid}`)
+      .update({
+        userEnd: firebase.firestore.Timestamp.now(),
+      });
+  }
+
   checkForWin() {
     // Win State
     console.log("it ran gotem");
@@ -90,20 +116,11 @@ class GameStart extends React.Component {
       this.state.odlaw === true
     ) {
       this.stopTimer();
+      this.setUserEnd();
       this.setState(
         {
           gameOver: true,
-        },
-        () => {
-          firebase
-            .firestore()
-            .collection("users")
-            .doc(`${this.props.user.uid}`)
-            .update({
-              userEnd: firebase.firestore.Timestamp.now(),
-            });
-        }
-      );
+        });
       firebase
         .firestore()
         .collection("users")
@@ -112,13 +129,16 @@ class GameStart extends React.Component {
         .then((snap) => {
           let startTime = snap.get("userStart");
           let endTime = snap.get("userEnd");
+          let score = (endTime - startTime)
+          console.log(startTime);
+          console.log(endTime);
           console.log(`Duration: ${endTime - startTime}`);
           firebase
             .firestore()
             .collection("users")
             .doc(`${this.props.user.uid}`)
             .update({
-              score: (endTime - startTime),
+              score: score,
             });
         });
     }
@@ -191,24 +211,7 @@ class GameStart extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault(); 
-    const setUserName = async () => {
-      try{
-        firebase
-        .firestore()
-        .collection("users")
-        .doc(`${this.props.user.uid}`)
-        .update({
-          name: `${this.state.userName}`,
-        });
-      } catch(err){
-        console.log(err, 'BRUH')
-      }
-    }
-    setUserName();
-      this.setState({
-        toLeaderboard: true
-      });
-
+    this.setUserName();
   }
 
   checkBoardClick(e) {
@@ -228,7 +231,7 @@ class GameStart extends React.Component {
       return <Redirect to='/Leaderboards' />
     }
 
-    
+    // If no anon user redirect to home
     if (this.props.user === null){
       return <Redirect to='/'></Redirect>
     }
