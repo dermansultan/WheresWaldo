@@ -105,6 +105,30 @@ class GameStart extends React.Component {
       .update({
         userEnd: firebase.firestore.Timestamp.now(),
       });
+      
+      firebase
+      .firestore()
+      .collection("users")
+      .doc(`${this.props.user.uid}`)
+      .get()
+      .then((snap) => {
+        let startTime = snap.get("userStart");
+        let endTime = snap.get("userEnd");
+        let score; 
+        if (startTime && endTime){
+          score = endTime - startTime;
+        }
+        console.log(startTime);
+        console.log(endTime);
+        console.log(`Duration: ${endTime - startTime}`);
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(`${this.props.user.uid}`)
+          .update({
+            score: score,
+          });
+      });
   }
 
   checkForWin() {
@@ -120,26 +144,6 @@ class GameStart extends React.Component {
       this.setState(
         {
           gameOver: true,
-        });
-      firebase
-        .firestore()
-        .collection("users")
-        .doc(`${this.props.user.uid}`)
-        .get()
-        .then((snap) => {
-          let startTime = snap.get("userStart");
-          let endTime = snap.get("userEnd");
-          let score = (endTime - startTime)
-          console.log(startTime);
-          console.log(endTime);
-          console.log(`Duration: ${endTime - startTime}`);
-          firebase
-            .firestore()
-            .collection("users")
-            .doc(`${this.props.user.uid}`)
-            .update({
-              score: score,
-            });
         });
     }
   }
